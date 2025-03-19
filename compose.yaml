@@ -1,0 +1,49 @@
+#version: '1.0'
+
+services:
+  steamcmd:
+    build:
+      context: .
+      dockerfile: Dockerfile.steamcmd
+    image: dockerstrike/steamcmd
+    deploy:
+      replicas: 0 # This is just an intermediate image.
+
+  counter-strike:
+    container_name: counter-strike
+    depends_on:
+      - steamcmd
+    build:
+      context: .
+      dockerfile: Dockerfile.counter-strike
+    image: dockerstrike/counter-strike
+    command:
+      [
+        "+ip",
+        "${IP_ADDRESS:-0.0.0.0}",
+        "+port",
+        "${PORT:-27015}",
+        "+maxplayers",
+        "${MAX_PLAYERS:-24}",
+        "+map",
+        "${MAP:-de_dust2}",
+        "+servercfgfile",
+        "${CONFIG_FILE:-server.cfg}",
+        "+hostname",
+        "${SERVER_NAME:-Docker-Strike}",
+        "-autoupdate", # do NOT auto update HLDS because it might fail.
+        "-insecure" # VAC doesn't work, don't even bother.
+      ]
+    networks:
+      - bridge_network
+    ports:
+      - "${PORT:-27015}:${PORT:-27015}/udp"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+networks:
+  bridge_network:
+    driver: bridge

@@ -1,0 +1,4 @@
+/data/cstrike/*
+!/data/cstrike/.gitkeep
+
+.env
