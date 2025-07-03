@@ -4,7 +4,7 @@ FROM debian:12.7-slim
 # Create user for steamcmd and gameserver
 RUN useradd -m steam
 
-# Set environment variables
+# Set environment variables (User and Workdir)
 ENV USER=root
 ENV HOME='/home/steam'
 WORKDIR $HOME
@@ -18,7 +18,7 @@ RUN apt-get update -y \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_U
 
-# Set environment variables (Locale related)
+# Set environment variables (Locale)
 ENV LANG='en_US.UTF-8'
 ENV LANGUAGE='en_US:en'
 
