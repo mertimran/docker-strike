@@ -1,8 +1,8 @@
 # Set Base Image
-FROM debian:12.7-slim
+FROM debian:bookworm-slim
 
 # Create user for steamcmd and gameserver
-RUN useradd -m steam
+RUN useradd -m steam -u 1000 -g 1000
 
 # Set environment variables (User and Workdir)
 ENV USER=root
@@ -16,11 +16,12 @@ COPY data/debian.sources /etc/apt/sources.list.d/debian.sources
 RUN apt-get update -y \
 	&& apt-get install -y --no-install-recommends vim less ca-certificates debconf-utils locales \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_U
+	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 # Set environment variables (Locale)
 ENV LANG='en_US.UTF-8'
 ENV LANGUAGE='en_US:en'
+ENV LC_ALL='en_US.UTF-8'
 
 # Insert Steam propmt answers
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]

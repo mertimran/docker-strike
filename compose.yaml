@@ -23,6 +23,9 @@ services:
 
     image: docker-strike/hlds
 
+    volumes:
+      - ./data/${GAME:-cstrike}:/mnt/${GAME:-cstrike}:ro
+
     command:
       [
         "-game", "${GAME:-cstrike}",
@@ -30,7 +33,7 @@ services:
         "+port", "${PORT:-27015}",
         "+maxplayers", "${MAX_PLAYERS:-24}",
         "+map", "${MAP:-de_dust2}",
-        "+servercfgfile", "${CONFIG_FILE:-server.cfg}",
+        +servercfgfile", "${CONFIG_FILE:-server.cfg}",
         "+hostname", "${SERVER_NAME:-Docker-Strike}",
         "-autoupdate", # do NOT auto update HLDS because it might fail.
         "-insecure" # VAC doesn't work, don't even bother.

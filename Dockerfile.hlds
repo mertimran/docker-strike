@@ -1,5 +1,7 @@
 FROM docker-strike/steamcmd
 
+ARG GAME=cstrike
+
 # Download the gameserver files from Steam
 # Note: Chained the update and config commands because of the good'ol steamcmd bug
 RUN steamcmd +logout \
@@ -20,18 +22,14 @@ RUN steamcmd +logout \
 	+app_update 90 validate \
 	+quit
 
-# since we are building
-ARG GAME=cstrike
-# Copy game directory to container.
-COPY --chown=steam:steam "data/${GAME:-cstrike}" "/home/steam/hlds/${GAME:-cstrike}"
-
 # Change user before starting the server 
 ENV USER=steam
 USER steam
 
 # Run Half-Life Dedicated Server
+COPY --chown=steam:steam entrypoint.sh $HOME/hlds/entrypoint.sh
 WORKDIR $HOME/hlds/
-ENTRYPOINT ["./hlds_run"]
+ENTRYPOINT ["/home/steam/hlds/entrypoint.sh"]
 
 # Expose HLDS Port
 EXPOSE "${PORT:-27015}"
